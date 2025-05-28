@@ -58,7 +58,6 @@ ROOT_URLCONF = 'AutoDjango.urls'
 
 # myproject/settings.py
 
-import os
 
 TEMPLATES = [
     {
