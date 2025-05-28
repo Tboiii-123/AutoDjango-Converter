@@ -62,31 +62,6 @@ def convert_html(request):
             html_input
         )
 
-        card_pattern = re.findall(
-            r'(<div class="card.*?</div>\s*</div>)', html_input, re.DOTALL)
-
-        # Check for repeated cards
-        card_counts = {}
-        for card in card_pattern:
-            card_counts[card] = card_counts.get(card, 0) + 1
-
-        # If any card is repeated > 1, convert to {% for %}
-        for card, count in card_counts.items():
-            if count > 1:
-                # Replace values in the card to generic placeholders
-                card_for_loop = re.sub(r'src="{% static \'([^"]+)\' %}"', r'src="{{ item.image }}"', card)
-                card_for_loop = re.sub(r'<p id="header">([^<]+)</p>', r'<p id="header">{{ item.title }}</p>', card_for_loop)
-                card_for_loop = re.sub(r'<p>\s*(.*?)\s*</p>', r'<p>{{ item.description }}</p>', card_for_loop, count=1)
-
-                loop_code = (
-                    '{% for item in items %}\n' +
-                    card_for_loop +
-                    '\n{% endfor %}'
-                )
-
-                html_input = html_input.replace(card, '', count - 1)  # remove duplicates
-                html_input = html_input.replace(card, loop_code, 1)  # replace the first one with loop
-
 
         converted_html = html_input
 
